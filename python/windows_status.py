@@ -2,6 +2,8 @@ import subprocess
 import win32gui
 import win32con
 import time
+import os
+import re
 import pygetwindow as gw
 import pyautogui
 import pytesseract
@@ -9,7 +11,8 @@ from pathlib import Path
 
 #CONVSP.exe转换状态窗口检测器
 class ConvspStatusDetector:
-    
+    number = 0
+    addnumber = 0
     #初始化检测器"Sentinel LDK Protection System","Sentinel key not found(H0007)", "Conversion successful","Different No. of Axis"
     def __init__(self, window_keywords: list = None, timeout: int = 2):
         # self.window_keywords = window_keywords or ["CONVSP", "Sentinel LDK Protection System", "Sentinel key not found(H0007)","Conversion successful","Different No. of Axis"]         #window_keywords:窗口识别关键词列表（默认：["CONVSP", "转换", "状态"]）
@@ -18,6 +21,29 @@ class ConvspStatusDetector:
         self.status_window_hwnd = None                                              # 状态窗口句柄
         self.convsp_process = None                                                  # CONVSP进程对象
     
+    """使用正则表达式检查 sub_str 是否在 main_str 中，不区分大小写"""
+    def contains_ignore_case_regex(main_str, sub_str):
+        pattern = re.compile(re.escape(sub_str), re.IGNORECASE)
+        return bool(pattern.search(main_str))
+
+    """统计指定目录中的文件数量（仅当前目录，不包含子目录）"""
+    def count_files_current_dir(self,directory):
+        try:
+            # 获取目录中的所有条目
+            entries = os.listdir(directory)
+            # 过滤出文件（排除目录）
+            files = [entry for entry in entries if os.path.isfile(os.path.join(directory, entry))]
+            return len(files)
+        except FileNotFoundError:
+            print(f"错误：目录 '{directory}' 不存在")
+            return -1
+        except PermissionError:
+            print(f"错误：没有访问目录 '{directory}' 的权限")
+            return -1
+        except Exception as e:
+            print(f"错误：{e}")
+            return -1
+
     # 判断窗口是否为CONVSP状态窗口
     def _is_status_window(self, hwnd: int) -> bool:
         
@@ -42,10 +68,7 @@ class ConvspStatusDetector:
         buffer_bytes = buf.tobytes()
         content = buffer_bytes.decode(encoding="utf-8", errors="ignore")
         content = content.replace("\x00", "").strip()
-        
-        # content = win32gui.GetDlgItemText(hwnd,0)
-        
-        
+    
         # windows = gw.getWindowsWithTitle("CONVSP")
         # windows[0].activate()
         # pyautogui.sleep(0.5)
@@ -53,8 +76,6 @@ class ConvspStatusDetector:
         # content = pytesseract.image_to_string(screenshot)
         
         # windows_key = gw.getWindowsWithTitle("Sentinel LDK Protection System")
-        
-        
         return content.strip()
         
     
@@ -97,25 +118,29 @@ class ConvspStatusDetector:
                 
                 # 解析状态（根据实际窗口内容调整关键词）"Sentinel LDK Protection System","Sentinel key not found(H0007)", "Conversion successful","Different No. of Axis"
                 content_lower = detect_result["content"].lower()
-                if any(keyword in content_lower for keyword in ["Conversion successful", "Different No. of Axis"]):
-                    # detect_result["status"] = "success"
-                    detect_result["content"] = keyword
-                elif any(keyword in content_lower for keyword in ["Sentinel key not found(H0007)", "Different No. of Axis"]):
-                    # detect_result["status"] = "failed"
-                    detect_result["content"] = keyword
+                print("content_lower = ",content_lower)
+                if r"Sentinel LDK Protection System".lower() in content_lower:
+                    detect_result["content"] = r"Sentinel key not found(H0007)"
+                elif r"CONVSP".lower() in content_lower:
+                    addnumber = self.count_files_current_dir(r"D:\LXPmyAPP\publish\C9110011")
+                    if addnumber > self.number:
+                        detect_result["content"] = r"Conversion successful"
+                    else:
+                        detect_result["content"] = r"Different No. of Axis"
                     # 提取错误信息
                     error_keywords = ["Sentinel key not found(H0007)", "Different No. of Axis"]
                     for keyword in error_keywords:
                         if keyword in content_lower:
+                            print("keyword = ",keyword)
                             error_start = detect_result["content"].lower().index(keyword)
                             detect_result["error_msg"] = detect_result["content"][error_start:].strip()
                             break
             time.sleep(0.5)  # 每0.5秒检查一次
-        
         return detect_result
     
     def close_status_window(self):
         #关闭状态窗口（如果存在）
+        print("status_window_hwnd = ",self.status_window_hwnd)
         if self.status_window_hwnd:
             try:
                 # 发送关闭消息
@@ -160,6 +185,7 @@ class ConvspStatusDetector:
             # "overall_status": status_result.get("status", "unknown")
         }
 
+    
 
 # 调用
 if __name__ == "__main__":
@@ -175,9 +201,9 @@ if __name__ == "__main__":
     # list_all_windows()
     
     # 配置CONVSP.EXE路径和参数
-    convsp_path = r"D:\WeldRobotWeldRobot1.0\ptom\publish\CONVSP.EXE"
-    input_file = r"D:\WeldRobotWeldRobot1.0\ptom\publish\234.txt"
-    output_file = r"D:\WeldRobotWeldRobot1.0\ptom\publish\output.s"
+    convsp_path = r"D:\LXPmyAPP\publish\C9110011\CONVSP.EXE"
+    input_file = r"D:\LXPmyAPP\publish\C9110011\123.txt"
+    output_file = r"D:\LXPmyAPP\publish\C9110011\output.s"
     
     # 创建检测器实例
     detector = ConvspStatusDetector(
@@ -185,12 +211,17 @@ if __name__ == "__main__":
         timeout=3  # 15秒超时
     )
     
+    number = detector.count_files_current_dir(r"D:\LXPmyAPP\publish\C9110011")
+    print("number = ",number)
     # 调用CONVSP.exe并检测状态窗口
     result = detector.call_convsp(
         convsp_path,
         [input_file, output_file]
     )
     
+    print("ctx[\"content\"] = ",result['status_window']['content'])
+
+
      # 自动关闭状态窗口（可选）
     if result['status_window']['found']:
         detector.close_status_window()
