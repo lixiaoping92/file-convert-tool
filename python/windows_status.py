@@ -165,11 +165,14 @@ class ConvspStatusDetector:
             "status_window": status_result
             # "overall_status": status_result.get("status", "unknown")
         }
+        print("窗口标题：",status_result['status_window']['title'])
+        print("窗口内容：",status_result['status_window']['content'])
 
 
 
-# 调用
-if __name__ == "__main__":
+
+# # 调用
+# if __name__ == "__main__":
     
     #列举出所有窗口
     # def list_all_windows():
@@ -181,31 +184,31 @@ if __name__ == "__main__":
     #   win32gui.EnumWindows(callback, None)
     # list_all_windows()
     
-    # 配置CONVSP.EXE路径和参数
-    convsp_path = r"D:\LXPmyAPP\publish\C9110011\CONVSP.EXE"
-    input_file = r"D:\LXPmyAPP\publish\C9110011\1212.PKT"
-    output_file = r"D:\LXPmyAPP\publish\C9110011\output.p"
+    # # 配置CONVSP.EXE路径和参数
+    # convsp_path = r"D:\LXPmyAPP\publish\C9110011\CONVSP.EXE"
+    # input_file = r"D:\LXPmyAPP\publish\C9110011\1212.PKT"
+    # output_file = r"D:\LXPmyAPP\publish\C9110011\output.p"
     
-    # 创建检测器实例
-    detector = ConvspStatusDetector(
-        window_keywords=["CONVSP", "Sentinel LDK Protection System"],
-        timeout=3  # 15秒超时
-    )
+    # # 创建检测器实例
+    # detector = ConvspStatusDetector(
+    #     window_keywords=["CONVSP", "Sentinel LDK Protection System"],
+    #     timeout=3  # 15秒超时
+    # )
 
-    # 调用CONVSP.exe并检测状态窗口
-    result = detector.call_convsp(
-        convsp_path,
-        [input_file, output_file]
-    )
+    # # 调用CONVSP.exe并检测状态窗口 convsp_path: CONVSP.EXE的路径,args: 传递给CONVSP.EXE的参数列表
+    # result = detector.call_convsp(
+    #     convsp_path,
+    #     [input_file, output_file]    #input_file: 输入文件路径，output_file: 输出文件路径
+    # )
     
-    # 打印结果
-    print("=== CONVSP调用结果 ===")
-    # print(f"进程返回码：{result['process']['returncode']}")
-    print(f"命令行输出：{result['process']['stdout']}")
-    print(f"\n=== 状态窗口信息 ===")
-    print(f"找到窗口：{result['status_window']['found']}")
-    print(f"窗口标题：{result['status_window']['title']}")
-    print(f"窗口内容：{result['status_window']['content']}")
-    # print(f"错误信息：{result['status_window']['error_msg']}")
+    # # 打印结果
+    # print("=== CONVSP调用结果 ===")
+    # # print(f"进程返回码：{result['process']['returncode']}")
+    # print(f"命令行输出：{result['process']['stdout']}")
+    # print(f"\n=== 状态窗口信息 ===")
+    # print(f"找到窗口：{result['status_window']['found']}")
+    # print(f"窗口标题：{result['status_window']['title']}")
+    # print(f"窗口内容：{result['status_window']['content']}")
+    # # print(f"错误信息：{result['status_window']['error_msg']}")
     
    
