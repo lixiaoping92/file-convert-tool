@@ -7,8 +7,8 @@ from pathlib import Path
 
 #CONVSP.exe转换状态窗口检测器
 class ConvspStatusDetector:
-    init_number = 0
-    addnumber = 0
+    # init_number = 0
+    # addnumber = 0
 
     #初始化检测器"Sentinel LDK Protection System","Sentinel key not found(H0007)", "Conversion successful","Different No. of Axis"
     def __init__(self, window_keywords: list = None, timeout: int = 2):
@@ -18,25 +18,25 @@ class ConvspStatusDetector:
         self.status_window_hwnd = None                                              # 状态窗口句柄
         self.convsp_process = None                                                  # CONVSP进程对象
         # 在初始化方法中设置init_number
-        self.init_number = self.count_files_current_dir(r"D:\LXPmyAPP\publish\C9110011")
+        # self.init_number = self.count_files_current_dir(r"D:\LXPmyAPP\publish\C9110011")
 
-    """统计指定目录中的文件数量（仅当前目录，不包含子目录）"""
-    def count_files_current_dir(self,directory):
-        try:
-            # 获取目录中的所有条目
-            entries = os.listdir(directory)
-            # 过滤出文件（排除目录）
-            files = [entry for entry in entries if os.path.isfile(os.path.join(directory, entry))]
-            return len(files)
-        except FileNotFoundError:
-            print(f"错误：目录 '{directory}' 不存在")
-            return -1
-        except PermissionError:
-            print(f"错误：没有访问目录 '{directory}' 的权限")
-            return -1
-        except Exception as e:
-            print(f"错误：{e}")
-            return -1
+    # """统计指定目录中的文件数量（仅当前目录，不包含子目录）"""
+    # def count_files_current_dir(self,directory):
+    #     try:
+    #         # 获取目录中的所有条目
+    #         entries = os.listdir(directory)
+    #         # 过滤出文件（排除目录）
+    #         files = [entry for entry in entries if os.path.isfile(os.path.join(directory, entry))]
+    #         return len(files)
+    #     except FileNotFoundError:
+    #         print(f"错误：目录 '{directory}' 不存在")
+    #         return -1
+    #     except PermissionError:
+    #         print(f"错误：没有访问目录 '{directory}' 的权限")
+    #         return -1
+    #     except Exception as e:
+    #         print(f"错误：{e}")
+    #         return -1
         
 
     # 判断窗口是否为CONVSP状态窗口
@@ -63,7 +63,7 @@ class ConvspStatusDetector:
         return content.strip()
         
     
-    #检测并提取转换状态窗口信息
+    #检测并提取转换状态窗口信息，返回转换窗口的标题和内容（转换状态）
     def detect_status_window(self) -> dict:
         #返回：
         detect_result = {
@@ -100,21 +100,23 @@ class ConvspStatusDetector:
                 detect_result["content"] = window_ctx["content"]
                 
                 # 解析状态（根据实际窗口内容调整关键词）"Sentinel LDK Protection System","Sentinel key not found(H0007)", "Conversion successful","Different No. of Axis"
-                content_lower = detect_result["content"].lower()
-                if r"Sentinel LDK Protection System".lower() in content_lower:
-                    detect_result["content"] = r"Sentinel key not found(H0007)"
-                elif r"CONVSP".lower() in content_lower:
-                    addnumber = self.count_files_current_dir(r"D:\LXPmyAPP\publish\C9110011")
-                    if addnumber > self.init_number:
-                        detect_result["content"] = r"Conversion successful"
-                    else:
-                        detect_result["content"] = r"Different No. of Axis"
+                # content_lower = detect_result["content"].lower()
+                # if r"Sentinel LDK Protection System".lower() in content_lower:
+                #     detect_result["content"] = r"Sentinel key not found(H0007)"
+                # elif r"CONVSP".lower() in content_lower:
+                #     # addnumber = self.count_files_current_dir(r"D:\LXPmyAPP\publish\C9110011")
+                #     if addnumber > self.init_number:
+                #         detect_result["content"] = r"Conversion successful" 
+                #     elif addnumber == self.init_number:
+                #         detect_result["content"] = r"Different No. of Axis"
+                        
             time.sleep(0.5)  # 每0.5秒检查一次
+            # print("窗口标题：",detect_result['title'])
+            # print("窗口内容：",detect_result['content'])
         return detect_result
     
     def close_status_window(self):
         #关闭状态窗口（如果存在）
-        print("status_window_hwnd = ",self.status_window_hwnd)
         if self.status_window_hwnd:
             try:
                 # 发送关闭消息
@@ -122,7 +124,7 @@ class ConvspStatusDetector:
                 self.status_window_hwnd = None  # 重置句柄
                 return True
             except Exception as e:
-                print(f"关闭窗口失败：{e}")
+                # print(f"关闭窗口失败：{e}")
                 return False
         return False
     
@@ -149,13 +151,14 @@ class ConvspStatusDetector:
         # 自动关闭状态窗口（可选）
         if status_result['found']:
             self.close_status_window()
-            print("\n状态窗口已关闭")
+            # print("\n状态窗口已关闭")
 
 
         # 等待进程结束，获取命令行输出
         stdout, stderr = self.convsp_process.communicate()
         
         
+
         return {
             "process": {
             "returncode": self.convsp_process.returncode,
@@ -165,8 +168,6 @@ class ConvspStatusDetector:
             "status_window": status_result
             # "overall_status": status_result.get("status", "unknown")
         }
-        print("窗口标题：",status_result['status_window']['title'])
-        print("窗口内容：",status_result['status_window']['content'])
 
 
 
