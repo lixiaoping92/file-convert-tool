@@ -25,7 +25,7 @@ def monitor_file_with_watchdog(file_path)->bool:
     """
     if not os.path.exists(file_path):
         print(f"文件 {file_path} 不存在")
-        return
+        return False
     
     # 创建事件处理器
     event_handler = FileChangeHandler(file_path)
@@ -54,6 +54,7 @@ def monitor_file_with_watchdog(file_path)->bool:
     except KeyboardInterrupt:
         observer.stop()
         print("\n监控已停止")
+        return False
     
     # observer.join()
     # if event_handler.on_modified:

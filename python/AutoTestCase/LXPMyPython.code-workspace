@@ -2,10 +2,6 @@
 	"folders": [
 		{
 			"path": "../.."
-		},
-		{
-			"name": "file-convert-tool",
-			"path": "../../file-convert-tool"
 		}
 	],
 	"settings": {}

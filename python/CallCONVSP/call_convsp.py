@@ -3,6 +3,7 @@ import win32gui
 import win32con
 import time
 import os
+import ctypes
 from pathlib import Path
 
 #CONVSP.exe转换状态窗口检测器
@@ -11,7 +12,7 @@ class ConvspStatusDetector:
     # addnumber = 0
 
     #初始化检测器"Sentinel LDK Protection System","Sentinel key not found(H0007)", "Conversion successful","Different No. of Axis"
-    def __init__(self, window_keywords: list = None, timeout: int = 2):
+    def __init__(self, window_keywords: list = [], timeout: int = 2):
         # self.window_keywords = window_keywords or ["CONVSP", "Sentinel LDK Protection System", "Sentinel key not found(H0007)","Conversion successful","Different No. of Axis"]         #window_keywords:窗口识别关键词列表（默认：["CONVSP", "转换", "状态"]）
         self.window_keywords = window_keywords or ["CONVSP", "Sentinel LDK Protection System"]         #window_keywords:窗口识别关键词列表（默认：["CONVSP", "转换", "状态"]）
         self.timeout = timeout                                                      #timeout:等待窗口出现的超时时间（秒，默认10）
@@ -55,10 +56,9 @@ class ConvspStatusDetector:
         win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,win32con.SWP_NOMOVE | win32con.SWP_NOACTIVATE | win32con.SWP_NOOWNERZORDER | win32con.SWP_SHOWWINDOW | win32con.SWP_NOSIZE)         # 通过句柄窗口置顶
         class_name = win32gui.GetClassName(hwnd)
         buf_size = 512  # 缓冲区大小
-        buf = win32gui.PyMakeBuffer(buf_size)
+        buf = ctypes.create_string_buffer(buf_size)
         win32gui.SendMessage(hwnd, win32con.WM_GETTEXT, buf_size, buf)
-        buffer_bytes = buf.tobytes()
-        content = buffer_bytes.decode(encoding="utf-8", errors="ignore")
+        content = buf.value.decode(encoding="utf-8", errors="ignore")
         content = content.replace("\x00", "").strip()
         return content.strip()
         

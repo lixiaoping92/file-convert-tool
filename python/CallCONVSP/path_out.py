@@ -114,7 +114,14 @@ def file_convert_status(convsp_path,convsp_exe,file,to_file_type,call_convsp)->d
         "title": None,
         "content": None
     }
-    
+    if file is None or file == "":
+        detect_result["found"] = True
+        detect_result["title"] = r"CONVSP"
+        detect_result["content"] = r"Source-File doesn't exist"
+        print("文件名称：",file)
+        print("窗口标题：",detect_result["title"])  
+        print("窗口内容：",detect_result["content"]) 
+        return detect_result
     init_number = count_files_current_dir(convsp_path)
     temp_name = Path(file).stem       
     result = call_convsp.call_convsp(
@@ -152,7 +159,10 @@ if __name__ == "__main__":
         timeout=3  # 15秒超时
     )
 
+            
     if os.path.exists(convsp_exe):
+        if file_type(".PKT") == [] and file_type(".TXT") == [] and file_type(".P") == [] and file_type(".S") == []:
+            file_convert_status(convsp_path,convsp_exe,"","",detector) 
         PKTfiles = file_type(".PKT")
         for PKTfile in PKTfiles: 
             number += 1
