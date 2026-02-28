@@ -171,5 +171,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-cd D:\LXPMyPython
-git add python
