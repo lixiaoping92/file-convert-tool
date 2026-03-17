@@ -1,0 +1,30 @@
+# 编辑器配置
+.vscode/
+
+# 压缩文件
+*.zip
+
+# Python 相关
+__pycache__/
+*.pyc
+
+# 环境变量文件
+.env
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+
+# 操作系统文件
+Thumbs.db
+.DS_Store
+
+# 虚拟环境
+venv/
+env/
+
+# 子模块目录
+file-convert-tool/

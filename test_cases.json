@@ -1,0 +1,226 @@
+{
+  "title": "测试用例",
+  "structure": "org.xmind.ui.logic.right",
+  "rootTopic": {
+    "title": "测试用例",
+    "topics": [
+      {
+        "title": "：正常登录",
+        "topics": [
+          {
+            "title": "测试步骤",
+            "topics": [
+              {
+                "title": "1. 打开登录页面"
+              },
+              {
+                "title": "2. 输入正确的用户名：testuser"
+              },
+              {
+                "title": "3. 输入正确的密码：password123"
+              },
+              {
+                "title": "4. 点击登录按钮"
+              }
+            ]
+          },
+          {
+            "title": "预期结果: ：成功登录，跳转到首页"
+          },
+          {
+            "title": "测试数据: ：用户名：testuser，密码：password123"
+          },
+          {
+            "title": "优先级: ：高"
+          }
+        ]
+      },
+      {
+        "title": "：空用户名登录",
+        "topics": [
+          {
+            "title": "测试步骤",
+            "topics": [
+              {
+                "title": "1. 打开登录页面"
+              },
+              {
+                "title": "2. 留空用户名"
+              },
+              {
+                "title": "3. 输入正确的密码：password123"
+              },
+              {
+                "title": "4. 点击登录按钮"
+              }
+            ]
+          },
+          {
+            "title": "预期结果: ：提示“请输入用户名”"
+          },
+          {
+            "title": "测试数据: ：用户名为空，密码：password123"
+          },
+          {
+            "title": "优先级: ：高"
+          }
+        ]
+      },
+      {
+        "title": "：空密码登录",
+        "topics": [
+          {
+            "title": "测试步骤",
+            "topics": [
+              {
+                "title": "1. 打开登录页面"
+              },
+              {
+                "title": "2. 输入正确的用户名：testuser"
+              },
+              {
+                "title": "3. 留空密码"
+              },
+              {
+                "title": "4. 点击登录按钮"
+              }
+            ]
+          },
+          {
+            "title": "预期结果: ：提示“请输入密码”"
+          },
+          {
+            "title": "测试数据: ：用户名：testuser，密码为空"
+          },
+          {
+            "title": "优先级: ：高"
+          }
+        ]
+      },
+      {
+        "title": "：错误用户名登录",
+        "topics": [
+          {
+            "title": "测试步骤",
+            "topics": [
+              {
+                "title": "1. 打开登录页面"
+              },
+              {
+                "title": "2. 输入错误的用户名：wronguser"
+              },
+              {
+                "title": "3. 输入正确的密码：password123"
+              },
+              {
+                "title": "4. 点击登录按钮"
+              }
+            ]
+          },
+          {
+            "title": "预期结果: ：提示“用户名或密码错误”"
+          },
+          {
+            "title": "测试数据: ：用户名：wronguser，密码：password123"
+          },
+          {
+            "title": "优先级: ：高"
+          }
+        ]
+      },
+      {
+        "title": "：错误密码登录",
+        "topics": [
+          {
+            "title": "测试步骤",
+            "topics": [
+              {
+                "title": "1. 打开登录页面"
+              },
+              {
+                "title": "2. 输入正确的用户名：testuser"
+              },
+              {
+                "title": "3. 输入错误的密码：wrongpassword"
+              },
+              {
+                "title": "4. 点击登录按钮"
+              }
+            ]
+          },
+          {
+            "title": "预期结果: ：提示“用户名或密码错误”"
+          },
+          {
+            "title": "测试数据: ：用户名：testuser，密码：wrongpassword"
+          },
+          {
+            "title": "优先级: ：高"
+          }
+        ]
+      },
+      {
+        "title": "：连续3次密码错误锁定账户",
+        "topics": [
+          {
+            "title": "测试步骤",
+            "topics": [
+              {
+                "title": "1. 打开登录页面"
+              },
+              {
+                "title": "2. 输入正确的用户名：testuser"
+              },
+              {
+                "title": "3. 连续输入错误密码3次"
+              },
+              {
+                "title": "4. 再次尝试登录"
+              }
+            ]
+          },
+          {
+            "title": "预期结果: ：提示“账户已锁定，请联系管理员”"
+          },
+          {
+            "title": "测试数据: ：用户名：testuser，密码：wrong1, wrong2, wrong3"
+          },
+          {
+            "title": "优先级: ：高"
+          }
+        ]
+      },
+      {
+        "title": "：忘记密码功能",
+        "topics": [
+          {
+            "title": "测试步骤",
+            "topics": [
+              {
+                "title": "1. 打开登录页面"
+              },
+              {
+                "title": "2. 点击“忘记密码”链接"
+              },
+              {
+                "title": "3. 输入注册邮箱：test@example.com"
+              },
+              {
+                "title": "4. 点击“发送重置链接”按钮"
+              }
+            ]
+          },
+          {
+            "title": "预期结果: ：提示“重置密码链接已发送到邮箱”"
+          },
+          {
+            "title": "测试数据: ：邮箱：test@example.com"
+          },
+          {
+            "title": "优先级: ：中"
+          }
+        ]
+      }
+    ]
+  }
+}
